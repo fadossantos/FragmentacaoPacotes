@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="FragmentacaoPacotesWcf.SVC_DownloadArquivo" CodeBehind="SVC_DownloadArquivo.svc.cs" %>
