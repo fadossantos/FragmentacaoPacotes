@@ -12,10 +12,15 @@ namespace FragmentacaoPacotesWCF
         public List<string> listaString64;
         public int totalBytes;
         public int totalPacotes;
-        public string nomeArquivo;
+        public string nomearquivo;
+        public string versao;
+        public string id_arquivo;
 
-        public ArquivoParaDownload(string caminhoArquivo, int tamanhoPacotes)
+        public ArquivoParaDownload(string caminhoArquivo, int tamanhoPacotes, string id_Arquivo, string nomeArquivo, string Versao)
         {
+            this.id_arquivo = id_Arquivo;
+            this.nomearquivo = nomeArquivo;
+            this.versao = Versao;
             listaString64 = new List<string>();
             FileStream streamLeitura = File.OpenRead(caminhoArquivo);
             byte[] arquivoBytes = new byte[streamLeitura.Length];

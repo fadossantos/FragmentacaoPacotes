@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
@@ -19,14 +20,23 @@ namespace FragmentacaoPacotesWcf
         public SVC_DownloadArquivo()
         {
             listaArquivos = new List<ArquivoParaDownload>();
-            string caminhoArquivo = @ConfigurationManager.AppSettings["caminhoArquivo"];
-            ArquivoParaDownload arq = new ArquivoParaDownload(caminhoArquivo, 100000);
-            listaArquivos.Add(arq);
+            DirectoryInfo dir = new DirectoryInfo(@ConfigurationManager.AppSettings["caminhoDiretorio"]);
+            FileInfo[] arquivos = dir.GetFiles();
+            foreach(FileInfo file in arquivos)
+            {
+                String[] nomePartido = file.Name.Split('_');
+                string id_arquivo = nomePartido[0];
+                string versao = nomePartido[1];
+                string nomeArquivo = nomePartido[2];
+                ArquivoParaDownload arq = new ArquivoParaDownload(file.FullName, 100000, id_arquivo, nomeArquivo, versao);
+                listaArquivos.Add(arq);
+
+            }
         }
         public InformacoesArquivo RetornaInformacoesArquivo(string nomeArquivo)
         {
-            ArquivoParaDownload arq = listaArquivos.First(s => s.nomeArquivo == nomeArquivo);
-            InformacoesArquivo inf = new InformacoesArquivo(arq, listaArquivos.IndexOf(arq).ToString());
+            ArquivoParaDownload arq = listaArquivos.First(s => s.nomearquivo == nomeArquivo);
+            InformacoesArquivo inf = new InformacoesArquivo(arq);
             return inf;
         }
        
@@ -35,22 +45,23 @@ namespace FragmentacaoPacotesWcf
             List<string> strings = new List<string>();
             foreach (ArquivoParaDownload arq in listaArquivos)
                 {
-                strings.Add(arq.nomeArquivo);
+                strings.Add(arq.nomearquivo);
                 }
             return strings.ToArray();
         }
     
-        public Pacote RetornaPacote(int indexArquivo, int indexPacote)
+        public Pacote RetornaPacote(string _id_arquivo, string _versao, int indexPacote)
         {
-            Pacote pct = new Pacote(listaArquivos[indexArquivo].nomeArquivo, "1.0", indexArquivo, indexPacote, listaArquivos[indexArquivo].RetornaPacote(indexPacote));
+            ArquivoParaDownload arq = listaArquivos.First(s => s.id_arquivo == _id_arquivo && s.versao == _versao);
+            Pacote pct = new Pacote(arq.nomearquivo, arq.versao, arq.id_arquivo, indexPacote, arq.RetornaPacote(indexPacote));
             return pct;
         }
 
 
 
-        public Pacote RetornaPacoteREST(string indexArquivo, string indexPacote)
+        public Pacote RetornaPacoteREST(string _id_arquivo, string _versao, string indexPacote)
         {
-            return RetornaPacote(Convert.ToInt32(indexArquivo), Convert.ToInt32(indexPacote));
+            return RetornaPacote(_id_arquivo, _versao, Convert.ToInt32(indexPacote));
         }
         public InformacoesArquivo RetornaInformacoesArquivoREST(string nomeArquivo)
         {
@@ -61,6 +72,9 @@ namespace FragmentacaoPacotesWcf
             return RetornaListaArquivos();
         }
 
-
+        public void SubirArquivo(string id_Arquivo, string versao, string nomeArquivo, byte[] dados)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

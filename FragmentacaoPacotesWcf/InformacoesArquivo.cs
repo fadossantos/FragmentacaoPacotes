@@ -6,9 +6,6 @@ namespace FragmentacaoPacotesWcf
     [DataContract]
     public class InformacoesArquivo
     {
-       
-   
-
         [DataMember]
         string nomearquivo;
         [DataMember]
@@ -20,13 +17,13 @@ namespace FragmentacaoPacotesWcf
         [DataMember]
         string versao;
 
-        public InformacoesArquivo(ArquivoParaDownload arq, string index)
+        public InformacoesArquivo(ArquivoParaDownload arq)
         {
-            nomearquivo = arq.nomeArquivo;
+            nomearquivo = arq.nomearquivo;
             quantidadepacotes = arq.totalPacotes;
             tamanhoarquivo = arq.totalBytes;
-            id_arquivo = index;
-            versao = "1.0";
+            id_arquivo = arq.id_arquivo;
+            versao = arq.versao;
 
         }
     }

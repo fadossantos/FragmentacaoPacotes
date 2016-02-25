@@ -14,7 +14,7 @@ namespace FragmentacaoPacotesWcf
     {
 
         [OperationContract]
-        Pacote RetornaPacote(int indexArquivo, int indexPacote);
+        Pacote RetornaPacote(string id_arquivo, string versao, int indexPacote);
 
         [OperationContract]
         string[] RetornaListaArquivos();
@@ -22,10 +22,16 @@ namespace FragmentacaoPacotesWcf
         [OperationContract]
         InformacoesArquivo RetornaInformacoesArquivo(string nomeArquivo);
 
+
+        [OperationContract]
+        void SubirArquivo(string id_Arquivo, string versao, string nomeArquivo, byte[] dados);
+
+
+
         // TODO: Add your service operations here
     }
 
 
     // Use a data contract as illustrated in the sample below to add composite types to service operations.
-    
+
 }

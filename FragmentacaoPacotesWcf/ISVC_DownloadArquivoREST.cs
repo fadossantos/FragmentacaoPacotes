@@ -13,8 +13,8 @@ namespace FragmentacaoPacotesWcf
     {
         
        [OperationContract]
-       [WebGet(UriTemplate = "/RetornaPacote/{indexArquivo}/{indexPacote}", RequestFormat = WebMessageFormat.Json,ResponseFormat = WebMessageFormat.Json)]
-        Pacote RetornaPacoteREST(string indexArquivo, string indexPacote);
+       [WebGet(UriTemplate = "/RetornaPacote/{_id_arquivo}/{_versao}/{indexPacote}", RequestFormat = WebMessageFormat.Json,ResponseFormat = WebMessageFormat.Json)]
+        Pacote RetornaPacoteREST(string _id_arquivo, string _versao, string indexPacote);
 
         [OperationContract]
         [WebGet(UriTemplate = "/RetornaListaArquivos", ResponseFormat = WebMessageFormat.Json)]
@@ -23,7 +23,6 @@ namespace FragmentacaoPacotesWcf
         [OperationContract]
         [WebGet(UriTemplate = "/RetornaInformacoesArquivo/{nomeArquivo}", RequestFormat = WebMessageFormat.Json,ResponseFormat = WebMessageFormat.Json)]
         InformacoesArquivo RetornaInformacoesArquivoREST(string nomeArquivo);
-
 
 
 
