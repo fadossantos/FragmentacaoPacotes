@@ -14,26 +14,40 @@ namespace FragmentacaoPacotesWCF
         
         static void Main(string[] args)
         {
+            List<ArquivoParaDownload>  listaArquivos = new List<ArquivoParaDownload>();
+            DirectoryInfo dir = new DirectoryInfo(@ConfigurationManager.AppSettings["caminhoDiretorio"]);
+            FileInfo[] arquivos = dir.GetFiles();
+            foreach (FileInfo file in arquivos)
+            {
+                String[] nomePartido = file.Name.Split('_');
+                string id_arquivo = nomePartido[0];
+                string versao = nomePartido[1];
+                string nomeArquivo = nomePartido[2];
+                ArquivoParaDownload arq = new ArquivoParaDownload(file.FullName, 100000, id_arquivo, nomeArquivo, versao);
+                listaArquivos.Add(arq);
+
+            }
             string caminhoArquivo = ConfigurationManager.AppSettings["caminhoArquivo"]; 
             string caminhoDiretorio = ConfigurationManager.AppSettings["caminhoDiretorio"];
             string caminhoNovoArquivo = ConfigurationManager.AppSettings["caminhoNovoArquivo"]; ;
-            ArquivoParaDownload arq = new ArquivoParaDownload(caminhoArquivo, 102400);
-            int contador = 0;
-            foreach(string bt in arq.listaString64)
+            foreach (ArquivoParaDownload arq in listaArquivos)
             {
-                byte[] btbyte = Convert.FromBase64String(bt);
-                using (Stream file = File.OpenWrite(caminhoDiretorio + contador.ToString("000000") + ".pct"))
+                int contador = 0;
+                foreach (string bt in arq.listaString64)
                 {
-                   file.Write(btbyte, 0, btbyte.Length);               
+                    byte[] btbyte = Convert.FromBase64String(bt);
+                    using (Stream file = File.OpenWrite(caminhoDiretorio + contador.ToString("000000") + ".pct"))
+                    {
+                        file.Write(btbyte, 0, btbyte.Length);
+                    }
+                    contador = contador + 1;
                 }
-                contador = contador + 1;
+                JuntarArquivo.RemontaArquivo(caminhoNovoArquivo, caminhoDiretorio);
+                string hash1 = GetMD5HashFromFile(caminhoArquivo);
+                string hash2 = GetMD5HashFromFile(caminhoNovoArquivo);
+                Console.WriteLine("{0} --> {1}", hash1, hash2);
+                Console.ReadKey();
             }
-            JuntarArquivo.RemontaArquivo(caminhoNovoArquivo, caminhoDiretorio);
-            string hash1 = GetMD5HashFromFile(caminhoArquivo);
-            string hash2 = GetMD5HashFromFile(caminhoNovoArquivo);
-            Console.WriteLine("{0} --> {1}", hash1, hash2);
-            Console.ReadKey();
-            
         }
 
         public static string GetMD5HashFromFile(string fileName)
